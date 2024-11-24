@@ -20,10 +20,7 @@ ir = (r - iof)*((22.5 - 2.50*n)/100)
 # Calcular rendimento líquido
 final = r - iof - ir
 
-# Arredondamentos
-iof = round(iof, 3)
-ir = round(ir, 3)
-final = round(final, 3)
-
-print(f'IOF = {iof}, IR = {ir}')
-print(f'Rendimento Final = {final}')
+print(f'Rendimento bruto: R$ {r:.2f}')
+print(f'IOF: R$ {iof:.2f}')
+print(f'IR: R$ {ir:.2f}')
+print(f'Rendimento líquido: R$ {final:.2f}')
