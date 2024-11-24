@@ -5,8 +5,10 @@ import numpy as np
 
 OP_TYPE_DEPOSIT = 'Deposit'
 
-TARGET_COIN = 'BTC'
-BRL_COIN = 'BRL'
+EXCHANGE = 'BINANCE'
+
+COIN_TARGET = 'BTC'
+COIN_BRL = 'BRL'
 
 TRADE_TYPE_BUY = 'c'
 TRADE_TYPE_SELL = 'v'
@@ -21,8 +23,8 @@ df = df[['Coin', 'Change']]
 
 ## Group BRL/TARGET COIN operations
 
-target_df = df[df.Coin == TARGET_COIN].reset_index(drop=True)
-brl_df = df[df.Coin == BRL_COIN].reset_index(drop=True)
+target_df = df[df.Coin == COIN_TARGET].reset_index(drop=True)
+brl_df = df[df.Coin == COIN_BRL].reset_index(drop=True)
 df_concat = target_df.join(brl_df, lsuffix='_TARGET', rsuffix='_BRL')
 
 ## Build trades dataframe
@@ -54,10 +56,10 @@ sales_balance = total_sell - mean_price * df_sell_trades.Quantity.sum()
 ir = sales_balance * 0.15 if sales_balance > 0 else 0.00
 
 ### Investment
-investment = total_buy - total_sell + sales_balance
+investment = mean_price * amm_coins
 
+print(f'Qtd Moedas: {amm_coins:.8}')
 print(f'Saldo de Vendas: R$ {sales_balance:.2f}')
 print(f'IR: R$ {ir:.2f}')
-print(f'Qtd Moedas: {amm_coins:.8}')
 print(f'Preço médio: R$ {mean_price:.2f}')
-print(f"Tenho {amm_coins:.8} {TARGET_COIN}, adquiridos a um custo médio de R$ {mean_price:,.2f}, totalizando um investimento de R$ {investment:,.2f}, custodiados na corretora BINANCE.")
+print(f"Tenho {amm_coins:.8} {COIN_TARGET}, adquiridos a um custo médio de R$ {mean_price:,.2f}, totalizando um investimento de R$ {investment:,.2f}, custodiados na corretora {EXCHANGE}.")
