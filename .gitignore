@@ -1,4 +1,5 @@
 .idea/*
 
-**/data/*.csv
-!data/test-*
+**/data/*
+!**/data/test*
+!**/data/README.md
