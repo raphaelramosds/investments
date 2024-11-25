@@ -3,11 +3,11 @@ import numpy as np
 
 ## Config
 
-OP_TYPE_DEPOSIT = 'Deposit'
+OP_IGNORED = ['Deposit', 'Transfer Between Main and Funding Wallet']
 
 EXCHANGE = 'BINANCE'
 
-COIN_TARGET = 'BTC'
+COIN_TARGET = 'BNB'
 COIN_BRL = 'BRL'
 
 TRADE_TYPE_BUY = 'c'
@@ -17,8 +17,8 @@ pd.set_option("display.precision", 8)
 
 ## Read settlements
 
-df = pd.read_csv('data/2024-0101-2311.csv')
-df = df[(df.Operation != OP_TYPE_DEPOSIT)]
+df = pd.read_csv('data/test-1.csv')
+df = df[~(df.Operation.isin(OP_IGNORED))]
 df = df[['Coin', 'Change']]
 
 ## Group BRL/TARGET COIN operations
