@@ -17,7 +17,7 @@ pd.set_option("display.precision", 8)
 
 ## Read settlements
 
-df = pd.read_csv('data/jan-nov-2024.csv')
+df = pd.read_csv('data/2024-0101-2311.csv')
 df = df[(df.Operation != OP_TYPE_DEPOSIT)]
 df = df[['Coin', 'Change']]
 
@@ -33,7 +33,6 @@ df_concat['Price'] = df_concat.Change_BRL.abs()/df_concat.Change_TARGET.abs()
 df_concat['Quantity'] = df_concat.Change_TARGET.abs()
 df_concat['Type'] = df_concat.Change_BRL.apply(lambda change : TRADE_TYPE_SELL if change > 0 else TRADE_TYPE_BUY)
 df_trades = df_concat[['Price', 'Quantity', 'Type']].reset_index(drop=True)
-# df_trades = pd.read_csv('tests/test-1.csv')
 
 df_buy_trades = df_trades[df_trades.Type == TRADE_TYPE_BUY]
 total_buy = (df_buy_trades.Price * df_buy_trades.Quantity).sum()
