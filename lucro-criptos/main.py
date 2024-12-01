@@ -11,7 +11,7 @@ COIN_BRL = 'BRL'
 pd.set_option("display.precision", 8)
 
 ## Read settlements
-df = pd.read_csv('data/test-2.csv')
+df = pd.read_csv('data/2024-0111-2411.csv')
 df = df[~(df['Operation'].isin(OP_IGNORED))]
 df = df[['UTC_Time', 'Coin', 'Change']]
 
@@ -35,12 +35,12 @@ df_sell = df_trades[df_trades['Quantity'] < 0].copy()
 
 # Colunas extras
 df_sell['MeanPrice'] = 0.0
-df_sell['TotalOwnershipCost'] = 0.0
+df_sell['OwnershipCost'] = 0.0
 
 # Calcular o lucro para cada venda
 for idx, row in df_sell.iterrows():
     # Somar valores de linhas anteriores a um timestamp
-    calc = lambda dataframe, col : dataframe[dataframe['Time'] < row['Time']][col].sum()
+    calc = lambda dataframe, col : abs(dataframe[dataframe['Time'] < row['Time']][col].sum())
 
     # Soma do Total gasto nas compras
     inv_buys = calc(df_buy, 'Investment')   
@@ -51,17 +51,20 @@ for idx, row in df_sell.iterrows():
     # Total de moedas vendidas
     qt_sells = calc(df_sell, 'Quantity')
 
-    # Soma do Custo de Aquisição total
-    aq_sells = calc(df_sell, 'TotalOwnershipCost')
+    # Soma do Custo de Aquisição
+    aq_sells = calc(df_sell, 'OwnershipCost')
 
-    # Preço médio
-    df_sell.loc[idx, 'MeanPrice'] = (inv_buys - aq_sells)/(qt_buys + qt_sells)
+    # Preço médio ponderado
+    df_sell.loc[idx, 'MeanPrice'] = (inv_buys - aq_sells)/(qt_buys - qt_sells)
 
-    # Custo de Aquisição Total
-    df_sell.loc[idx, 'TotalOwnershipCost'] = df_sell.loc[idx, 'MeanPrice'] * abs(row['Quantity'])
+    # Custo de Aquisição Total: Preço Médio * Quantidade Vendida
+    df_sell.loc[idx, 'OwnershipCost'] = df_sell.loc[idx, 'MeanPrice'] * abs(row['Quantity'])
 
     # Somar os investimentos relevantes
-    df_sell.loc[idx, 'Profit'] = df_sell.loc[idx, 'Investment'] - df_sell.loc[idx, 'TotalOwnershipCost']
+    df_sell.loc[idx, 'Profit'] = df_sell.loc[idx, 'Investment'] - df_sell.loc[idx, 'OwnershipCost']
+
+print("Compras realizadas:")
+print(df_buy)
 
 print("Vendas realizadas com lucros informados:")
 print(df_sell)
