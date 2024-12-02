@@ -57,10 +57,10 @@ for idx, row in df_sell.iterrows():
     # Preço médio ponderado
     df_sell.loc[idx, 'MeanPrice'] = (inv_buys - aq_sells)/(qt_buys - qt_sells)
 
-    # Custo de Aquisição Total: Preço Médio * Quantidade Vendida
+    # Custo de Aquisição: Preço Médio * Quantidade Vendida
     df_sell.loc[idx, 'OwnershipCost'] = df_sell.loc[idx, 'MeanPrice'] * abs(row['Quantity'])
 
-    # Somar os investimentos relevantes
+    # Lucro: Preço da venda menos o Custo de Aquisição
     df_sell.loc[idx, 'Profit'] = df_sell.loc[idx, 'Investment'] - df_sell.loc[idx, 'OwnershipCost']
 
 print("Compras realizadas:")
