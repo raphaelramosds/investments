@@ -11,7 +11,7 @@ COIN_BRL = 'BRL'
 pd.set_option("display.precision", 8)
 
 ## Read settlements
-df = pd.read_csv('data/2024-0111-2411.csv')
+df = pd.read_csv('data/2024-0111-2911.csv')
 df = df[~(df['Operation'].isin(OP_IGNORED))]
 df = df[['UTC_Time', 'Coin', 'Change']]
 
