@@ -1,17 +1,15 @@
 import pandas as pd
-import numpy as np
-import re
 
 ## Config
-OP_IGNORED = ['Deposit', 'Transfer Between Main and Funding Wallet']
-EXCHANGE = 'BINANCE'
+OP_IGNORED = ['Deposit', 'Transfer Between Main and Funding Wallet', 'Fiat Withdraw']
+EXCHANGE = 'Binance'
 COIN_TARGET = 'BTC'
 COIN_BRL = 'BRL'
 
 pd.set_option("display.precision", 8)
 
 ## Read settlements
-df = pd.read_csv('data/2024-0111-2911.csv')
+df = pd.read_csv('data/binance-2024.csv')
 df = df[~(df['Operation'].isin(OP_IGNORED))]
 df = df[['UTC_Time', 'Coin', 'Change']]
 
@@ -63,8 +61,19 @@ for idx, row in df_sell.iterrows():
     # Lucro: Preço da venda menos o Custo de Aquisição
     df_sell.loc[idx, 'Profit'] = df_sell.loc[idx, 'Investment'] - df_sell.loc[idx, 'OwnershipCost']
 
-print("Compras realizadas:")
+print("\nCompras realizadas:")
 print(df_buy)
 
-print("Vendas realizadas com lucros informados:")
+print("\nVendas realizadas com lucros informados:")
 print(df_sell)
+
+coin_amount = df_buy['Quantity'].sum() + df_sell['Quantity'].sum()
+mean_price = (df_buy['Investment'].sum() - df_sell['OwnershipCost'].sum())/(df_buy['Quantity'].sum() + df_sell['Quantity'].sum())
+
+print("\nSituação: {:.8f} BTC adquiridos a um preço médio de R$ {:.2f} na corretora {}".format(coin_amount, mean_price, EXCHANGE))
+
+print("Valor alienação: R$ {:.2f}".format(df_sell['Investment'].sum()))
+
+print("Custo de aquisição: R$ {:.2f}".format(df_sell['OwnershipCost'].sum()))
+
+print("Lucro realizado: R$ {:.2f}".format(df_sell['Profit'].sum()))
