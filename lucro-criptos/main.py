@@ -2,19 +2,21 @@ import pandas as pd
 
 ## Config
 OP_IGNORED = ['Deposit', 'Transfer Between Main and Funding Wallet', 'Fiat Withdraw']
-EXCHANGE = 'Binance'
-COIN_TARGET = 'BTC'
 COIN_BRL = 'BRL'
 
 pd.set_option("display.precision", 8)
 
+## Get file
+filename = input('Extrato Binance (.csv): ')
+coin_target = input('Código da criptomoeda (letras maíusculas): ')
+
 ## Read settlements
-df = pd.read_csv('data/binance-2024.csv')
+df = pd.read_csv(f'data/{filename}')
 df = df[~(df['Operation'].isin(OP_IGNORED))]
 df = df[['UTC_Time', 'Coin', 'Change']]
 
 ## Group BRL/TARGET COIN operations
-target_df = df[df['Coin'] == COIN_TARGET].reset_index(drop=True)
+target_df = df[df['Coin'] == coin_target].reset_index(drop=True)
 brl_df = df[df['Coin'] == COIN_BRL].reset_index(drop=True)
 df_concat = target_df.join(brl_df, lsuffix='_TARGET', rsuffix='_BRL')
 
@@ -70,7 +72,7 @@ print(df_sell)
 coin_amount = df_buy['Quantity'].sum() + df_sell['Quantity'].sum()
 mean_price = (df_buy['Investment'].sum() - df_sell['OwnershipCost'].sum())/(df_buy['Quantity'].sum() + df_sell['Quantity'].sum())
 
-print("\nSituação: {:.8f} BTC adquiridos a um preço médio de R$ {:.2f} na corretora {}".format(coin_amount, mean_price, EXCHANGE))
+print("\nSituação: {:.8f} BTC adquiridos a um preço médio de R$ {:.2f} na corretora BINANCE".format(coin_amount, mean_price))
 
 print("Valor alienação: R$ {:.2f}".format(df_sell['Investment'].sum()))
 

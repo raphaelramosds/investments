@@ -1,5 +1,5 @@
 .idea/*
 
 **/data/*
-!**/data/test*
+!**/data/example*
 !**/data/README.md
