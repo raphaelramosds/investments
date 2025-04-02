@@ -69,10 +69,10 @@ print(df_buy)
 print("\nVendas realizadas com lucros informados:")
 print(df_sell)
 
-coin_amount = df_buy['Quantity'].sum() + df_sell['Quantity'].sum()
-mean_price = (df_buy['Investment'].sum() - df_sell['OwnershipCost'].sum())/(df_buy['Quantity'].sum() + df_sell['Quantity'].sum())
-
-print("\nSituação: {:.8f} BTC adquiridos a um preço médio de R$ {:.2f} na corretora BINANCE".format(coin_amount, mean_price))
+if df_buy['Quantity'].sum() + df_sell['Quantity'].sum() > 0:
+    coin_amount = df_buy['Quantity'].sum() + df_sell['Quantity'].sum()
+    mean_price = (df_buy['Investment'].sum() - df_sell['OwnershipCost'].sum())/(df_buy['Quantity'].sum() + df_sell['Quantity'].sum())
+    print("\nSituação: {:.8f} BTC adquiridos a um preço médio de R$ {:.2f} na corretora BINANCE".format(coin_amount, mean_price))
 
 print("Valor alienação: R$ {:.2f}".format(df_sell['Investment'].sum()))
 
